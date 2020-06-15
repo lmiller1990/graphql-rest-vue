@@ -1,8 +1,8 @@
-Over the next few articles, I will be building a Kanban board app using GraphQL, Vue.js 3, Vite and some other technologies. Each article will focus on a different technology and some related concepts. The final product will look something like this:
+Over the next few articles, I will be building a Kanban board app using GraphQL, Vue.js 3, postgres, Vite and some other technologies. Each article will focus on a different technology and some related concepts. The final product will look something like this:
 
 SS1
 
-The first article or two will focus on the how we present the data: REST vs GraphQL, and how this decision will impact our design.
+The first article or two will focus on the how we present the data: REST vs GraphQL, and how this decision will impact our design. You can find the [source code here](https://github.com/lmiller1990/graphql-rest-vue).
 
 To really understand GraphQL and the problem it solves, you need to see the REST alternative, and its strengths and weaknesses. Furthermore, to get a good TypeScript experience with GraphQL, you need to use a good ORM. I recommend [TypeORM](https://typeorm.io/). We will first implement the Kanban board using REST, and then using GraphQL. This will let us compare and constrast the two.
 
@@ -379,7 +379,8 @@ query: SELECT "project"."id" AS "project_id", "project"."name" AS "project_name"
 
 You can see we get the projects and categories in a single query - this is important to remember, since we want to avoid the N+1 problem when we implement the GraphQL server!
 
-Implementing the `tasks` and `categories` view models and endpoints is no different to `projects`, so I will leave that as an exercise. You can find the full implementation in the source code.
+Implementing the `tasks` and `categories` view models and endpoints is no different to `projects`, so I will leave that as an exercise. You can find the full implementation in the [source code](https://github.com/lmiller1990/graphql-rest-vue).
+.
 
 ## Conclusion
 
