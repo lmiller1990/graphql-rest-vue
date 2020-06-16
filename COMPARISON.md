@@ -10,5 +10,5 @@
 
 - a single request
 - many resources can be fetched in a single request, result is not pre-defined
-- (more) complex to implement
+- (more) complex to implement. N+1 problem is common.
 - highly flexible

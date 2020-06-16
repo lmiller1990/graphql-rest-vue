@@ -1,23 +1,24 @@
 {
-  "type": "postgres",
-  "host": "localhost",
-  "port": 5432,
-  "username": "",
-  "logging": true,
-  "password": "",
-  "database": "kanban",
-  "entities": [
-    "src/entity/**/*.ts"
-  ],
-  "migrations": [
-    "src/migration/**/*.ts"
-  ],
-  "subscribers": [
-    "src/subscriber/**/*.ts"
-  ],
-  "cli": {
-    "entitiesDir": "src/entity",
-    "migrationsDir": "src/migration",
-    "subscribersDir": "src/subscriber"
-  }
+   "type": "postgres",
+   "host": "localhost",
+   "port": 5432,
+   "username": "",
+   "password": "",
+   "database": "kanban",
+   "synchronize": false,
+   "logging": true,
+   "entities": [
+      "src/entity/**/*.ts"
+   ],
+   "migrations": [
+      "src/migration/**/*.ts"
+   ],
+   "subscribers": [
+      "src/subscriber/**/*.ts"
+   ],
+   "cli": {
+      "entitiesDir": "src/entity",
+      "migrationsDir": "src/migration",
+      "subscribersDir": "src/subscriber"
+   }
 }
