@@ -15,6 +15,6 @@ create table tasks (
   name text not null,
   project_id integer not null,
   category_id integer not null,
-  foreign key (project_id) references projects(id),
-  foreign key (category_id) references categories(id)
+  foreign key (project_id) references projects(id) on delete cascade,
+  foreign key (category_id) references categories(id) on delete cascade
 );
