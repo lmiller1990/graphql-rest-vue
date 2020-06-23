@@ -1,10 +1,24 @@
-import {createConnection, createConnections, Connection} from "typeorm";
-import { getManager, getRepository } from "typeorm";
+import "reflect-metadata";
+import {createConnection, useContainer} from "typeorm";
+import * as graphqlHTTP from 'express-graphql'
+import * as express from 'express'
+import { buildSchema } from 'type-graphql'
+import { ProjectResolver } from './src/graphql/project.resolver'
+import {Container} from "typedi";
 
-import { Project } from './src/entity/Project'
+useContainer(Container)
+createConnection().then(async connection => {
+  const schema = await buildSchema({
+    resolvers: [ProjectResolver],
+    container: Container
+  });
 
-(async () => {
-  const connection: Connection = await createConnection();
-  const u = await getRepository(Project).findOne(1);
-  console.log(u)
-})()
+  const app = express()
+  app.use('/graphql', graphqlHTTP({
+    schema,
+    graphiql: true,
+  }))
+
+  app.listen(4000)
+
+}).catch(error => console.log(error));
