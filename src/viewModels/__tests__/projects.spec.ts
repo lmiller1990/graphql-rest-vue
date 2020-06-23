@@ -1,6 +1,5 @@
+import { projectViewModel, RestProject } from '../projects'
 import { createConnection, Connection, getRepository, DeepPartial } from 'typeorm'
-
-import { projectViewModel } from '../projects'
 import { Project } from '../../entity/Project'
 
 let connection: Connection
@@ -12,23 +11,26 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  connection.close()
+  await connection.close()
 })
 
-export const createProject = async (attrs: DeepPartial<Project> = {}): Promise<Project> => {
-  return getRepository(Project).save({
-    name: attrs.name || 'Test project'
+export const createProject = (attrs: DeepPartial<Project>): Promise<Project> => {
+  const repo = getRepository(Project)
+  return repo.save({
+    name: attrs.name || 'My new project'
   })
 }
 
-test('projectViewModel', async () => {
-  const project = await createProject({ name: 'Test' })
-  const vm = await projectViewModel()
-
-  expect(vm).toEqual([
+test('project view model', async () => {
+  const project = await createProject({ name: 'Project' })
+  const expected: RestProject[] = [
     {
       id: project.id,
-      name: 'Test'
+      name: 'Project'
     }
-  ])
+  ]
+
+  const actual = await projectViewModel()
+
+  expect(actual).toEqual(expected)
 })
