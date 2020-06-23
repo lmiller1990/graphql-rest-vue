@@ -1,5 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinTable } from "typeorm";
-import { Category } from "./Category";
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
 
 @Entity({ name: 'projects' })
 export class Project {
@@ -8,7 +7,4 @@ export class Project {
 
   @Column()
   name: string
-
-  @OneToMany(type => Category, category => category.project)
-  categories: Category[]
 }

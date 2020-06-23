@@ -1,37 +1,34 @@
-import { RestProject, projectViewModel } from '../projects'
-import { Connection, createConnection, getRepository } from 'typeorm'
-import { createProject, createCategory } from '../../../test/factories/projects'
+import { createConnection, Connection, getRepository, DeepPartial } from 'typeorm'
+
+import { projectViewModel } from '../projects'
 import { Project } from '../../entity/Project'
 
 let connection: Connection
 
-beforeEach(async () => {
+beforeAll(async () => {
   connection = await createConnection()
   const repo = getRepository(Project)
   await repo.remove(await repo.find())
 })
 
-afterEach(async () => {
-  await connection.close()
+afterAll(async () => {
+  connection.close()
 })
 
-test('projectsViewModel', async () => {
-  const project = await createProject({ name: 'Test Project' })
-  const category = await createCategory({ name: 'Category' }, project)
-  const expected: RestProject[] = [
+export const createProject = async (attrs: DeepPartial<Project> = {}): Promise<Project> => {
+  return getRepository(Project).save({
+    name: attrs.name || 'Test project'
+  })
+}
+
+test('projectViewModel', async () => {
+  const project = await createProject({ name: 'Test' })
+  const vm = await projectViewModel()
+
+  expect(vm).toEqual([
     {
       id: project.id,
-      name: 'Test Project',
-      categories: [
-        {
-          id: category.id,
-          name: 'Category'
-        }
-      ]
+      name: 'Test'
     }
-  ]
-
-  const actual = await projectViewModel()
-
-  expect(actual).toEqual(expected)
+  ])
 })
