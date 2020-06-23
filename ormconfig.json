@@ -6,7 +6,7 @@
    "password": "",
    "database": "kanban",
    "synchronize": false,
-   "logging": true,
+   "logging": false,
    "entities": [
       "src/entity/**/*.ts"
    ],
