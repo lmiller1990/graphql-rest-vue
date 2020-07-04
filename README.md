@@ -1,1 +1,10 @@
-A Kanban board powered by TypeORM and Vue.js. Backed by a postgresd database and both REST and GraphQL servers.
+{
+  project (id: 1) {
+    id
+    name
+    categories {
+      id
+      name
+    }
+  }
+}
