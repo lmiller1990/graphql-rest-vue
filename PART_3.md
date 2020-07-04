@@ -2,6 +2,8 @@ In the previous two articles, we looked at how to use TypeORM and Express to cre
 
 To build a GraphQL server and get a great TypeScript experience, we need a few libraries.
 
+You can find the source code for this article [here](https://github.com/lmiller1990/graphql-rest-vue).
+
 - [`express-graphql`](https://github.com/graphql/express-graphql) and `graphql`. `graphql` is a **JavaScript** implementation of GraphQL. `express-graphql` just wraps it nicely for us.
 - [`type-graphql`](https://github.com/MichalLytek/type-graphql). This will give us some decorators we can use to bridge the gap from GraphQL schema and our ORM (TypeORM in this case).
 
