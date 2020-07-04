@@ -4,9 +4,8 @@ To build a GraphQL server and get a great TypeScript experience, we need a few l
 
 - [`express-graphql`](https://github.com/graphql/express-graphql) and `graphql`. `graphql` is a **JavaScript** implementation of GraphQL. `express-graphql` just wraps it nicely for us.
 - [`type-graphql`](https://github.com/MichalLytek/type-graphql). This will give us some decorators we can use to bridge the gap from GraphQL schema and our ORM (TypeORM in this case).
-- [`typedi`](https://github.com/typestack/typedi) and [`typeorm-typedi-extensions`](https://github.com/typeorm/typeorm-typedi-extensions). This will help integrat `type-graphql` and TypeORM better.
 
-I don't normally like to use heaps of libraries, but this is the best combination of libraries I've found to work with GraphQL and TypeScript.
+I don't normally like to use too many libraries, but this is the best combination of libraries I've found to work with GraphQL and TypeScript.
 
 The goal will to be have a single endpoint, from which we can query for projects, tasks and categories:
 
@@ -19,10 +18,6 @@ The goal will to be have a single endpoint, from which we can query for projects
       category {
         id
       }
-    }
-    categories {
-      id
-      name
     }
   }
 }
@@ -93,12 +88,10 @@ import { createConnection, useContainer } from 'typeorm'
 import * as graphqlHTTP from 'express-graphql'
 import * as express from 'express'
 import { buildSchema } from 'type-graphql'
-import { Container } from 'typedi'
 
 import { ProjectResolver } from './project.resolvers'
 
 (async () => {
-  useContainer(Container)
   const connection = await createConnection()
   const schema = await buildSchema({
     resolvers: [ProjectResolver],
@@ -113,9 +106,7 @@ import { ProjectResolver } from './project.resolvers'
 })()
 ```
 
-The only part here actually required for a GraphQL server is `buildSchema` and the express app. We have some extra code here, namely `useContainer` from `typedi`. This will let us use **dependency injection**, so we don't need to create a new `projectRepository` every time we want to load projects. Instead, create one and inject it into the resolver, as you will see soon. Dependency injection is a common pattern in TypeScript, especially decorator heavy APIs.
-
-The last thing we need before we see some GraphQL goodness is the `ProjectResolver`.
+The only part here actually required for a GraphQL server is `buildSchema` and the express app. The last thing we need before we see some GraphQL goodness is the `ProjectResolver`.
 
 ## Creating the ProjectResolver
 
@@ -129,10 +120,6 @@ import { Project } from '../entity/Project'
 
 @Resolver(of => Project)
 export class ProjectResolver {
-  constructor(
-    @InjectRepository(Project)
-    private readonly repo: Repository<Project>
-  ) { }
 
   @Query(returns => [Project])
   async projects(@Arg('id') id: number) {
@@ -145,13 +132,15 @@ export class ProjectResolver {
 }
 ```
 
-I have found `type-graphql` works well with a dependency injection, class/decorator combination. You could do it in many other ways, but this seems to be the idiomatic way to accomplish things. We are keeping things simple, and just returning the projects for now. Notice `InjectRepository` - this is made possible by the `typedi` decorator and `typeorm-typedi-extensions`. If you want to dig into exactly how this all works, go for it - learning how your tools work is important, but outside the scope of this particular article.
-
-This is enough to get us up and running. Start your GraphQL server - I like to use `ts-node` in development. I run it in watch mode with `yarn ts-node-dev src/graphql/index.ts`. I can run a query by visiting `http://localhost:4000`:
+This is enough to get us up and running. Start your GraphQL server - I like to use `ts-node` in development. I run it in watch mode with `yarn ts-node-dev src/graphql/index.ts`. I can run a query by visiting `http://localhost:4000/graphql`:
 
 SS1
 
-Fun stuff! But we just tested by hand - let's automate this a bit. The previous article covers most of this snippet, so let's see the test first. You might try and do something like this we with REST endpoint:
+Fun stuff! But we just tested by hand - let's automate this a bit.
+
+## Writing a Resolver Test
+
+The previous article covers most of this snippet, so let's see the test first. You might try and do something like this we with REST endpoint:
 
 ```ts
 test('project resolver', async () => {
@@ -175,39 +164,10 @@ test('project resolver', async () => {
 })
 ```
 
-This won't work out too well for a number of reasons. Firstly, we are not loading the categories eagerly - so this would be failing. Even if we did, though, it is not as simple as just creating a new `ProjectResolver` and passing in the arguments - since we are using dependency injection, and soon will be using some more `type-graphql` decorators, to test the resolver as it behaves in production we need to create new `graphql` instance, similar to what we do in `src/graphql/index.ts`. Before doing this, however, we need a few prerequisites:
+This won't work out too well for a number of reasons. Firstly, we are not loading the categories eagerly - so this would be failing. Even if we did, though, it is not as simple as just creating a new `ProjectResolver` and passing in the arguments - since we are using `type-graphql` decorators, to test the resolver as it behaves in production we need to create new `graphql` instance, similar to what we do in `src/graphql/index.ts`. Before doing this, however, we need a few prerequisites:
 
-- call `useContainer(Container)` to set up the dependency injection
 - create a database connection
 - create a graphql instance
-
-## Setting up Jest for GraphQL
-
-We only need to call `useContainer` once. We can do this using Jest's `setupFiles` API. In `jest.config.js` I added the following
-
-```js
-module.exports = {
-  preset: 'ts-jest',
-  setupFiles: [
-    './testSetup.js'
-  ]
-}
-```
-
-And `testSetup.js` looks like this:
-
-```js
-const { createConnection, useContainer } = require('typeorm')
-const { Container } = require('typedi');
-
-;(async () => {
-  useContainer(Container)
-  console.log('Setting up DB')
-  await createConnection()
-})()
-```
-
-Not closing the connection - a bit dirty, but let's get the test running the make things nice.
 
 Update the test to use a `graphql` instance, and query it like we did in the GraphiQL UI. It's a lot of code - this is closer to an end to end, or integration test, than a unit test. That's fine - not everything has to be super granular or modular. This way, we get more coverage, and we are testing in a similar manner to production.
 
@@ -286,4 +246,6 @@ This article covered a lot of content:
 - setting up a GraphQL server using `type-graphql`, TypeORM and some utils
 - Jest `setupFiles`
 - Querying a GraphQL endpoint
+
+In the next article and screencast we will start building the front-end using Vue.js 3, powered by our GraphQL endpoint.
 
