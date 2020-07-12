@@ -2,9 +2,8 @@ import { createConnection } from "typeorm"
 import { buildSchema } from "type-graphql"
 import { ProjectsResolver } from "./project.resolvers"
 import * as express from 'express'
-import * as graphHTTP from 'express-graphql'
-import graphqlHTTP = require("express-graphql")
-
+import * as graphqlHTTP from 'express-graphql'
+import * as cors from 'cors'
 
 (async() => {
   await createConnection()
@@ -13,6 +12,7 @@ import graphqlHTTP = require("express-graphql")
   })
 
   const app = express()
+  app.use(cors())
   app.use('/graphql', graphqlHTTP({
     schema,
     graphiql: true

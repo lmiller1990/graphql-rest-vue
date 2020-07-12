@@ -15,4 +15,9 @@ export class ProjectsResolver {
 
     return project
   }
+
+  @Query(returns => [Project])
+  async projects(): Promise<Project[]> {
+    return getRepository(Project).find()
+  }
 }
