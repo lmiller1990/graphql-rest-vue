@@ -1,8 +1,27 @@
 import { reactive, inject, provide } from 'vue'
 import { SelectProject } from './types'
 
+interface Task {
+  id: string
+  name: string
+  categoryId: string // category.id
+}
+
+interface Category {
+  id: string
+  name: string
+}
+
+interface CurrentProject {
+  id: string
+  name: string
+  categories: Category[]
+  tasks: Record<string, Task>
+}
+
 interface State {
   projects: SelectProject[]
+  currentProject?: CurrentProject
 }
 
 function initialState(): State {
@@ -20,6 +39,55 @@ class Store {
 
   getState(): State {
     return this.state
+  }
+
+  async fetchProject(id: string) {
+    interface FetchProject {
+      project: {
+        id: string
+        name: string
+        categories: Array<{
+          id: string
+          name: string
+        }>
+        tasks: Array<{
+          id: string
+          name: string
+        }>
+      }
+    }
+
+    const response = await window.fetch('http://localhost:4000/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        query: `
+        {
+          project(id: ${id}) {
+            id
+            name
+            categories {
+              id
+              name
+            }
+            tasks {
+              id
+              name
+            }
+          }
+        }`
+      })
+    })
+    const result: { data: FetchProject } = await response.json()
+    console.log(result.data)
+    this.state.currentProject = {
+      id: result.data.project.id,
+      name: result.data.project.name,
+      categories: result.data.project.categories.map(x => ({ id: x.id, name: x.name })),
+      tasks: result.data.project.tasks.reduce((acc, curr) => acc[curr.id] = curr, {})
+    }
   }
 
   async fetchProjects() {
