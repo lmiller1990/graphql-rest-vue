@@ -44,12 +44,3 @@ class Store {
 }
 
 export const store = new Store()
-
-export const provideStore = (app) => {
-  app.provide('store', store)
-}
-
-export const useStore = (): Store => {
-  const store = inject<Store>('store')
-  return store
-}
