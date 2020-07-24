@@ -9,15 +9,22 @@ import SelectProject from './SelectProject.vue'
 
 export default defineComponent({
   components: {
-    SelectProject
+    SelectProject,
   },
 
   setup() {
     store.fetchProjects()
 
     return {
-      projects: computed(() => store.getState().projects)
+      projects: computed(() => store.getState().projects),
     }
   }
 })
 </script>
+
+<style scoped>
+.categories {
+  margin: 10px 0 0 0;
+  display: flex;
+}
+</style>
