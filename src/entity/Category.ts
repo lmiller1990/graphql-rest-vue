@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm'
 import { Project } from './Project'
-import { ObjectType, ID, Field } from 'type-graphql'
+import { ObjectType, ID, Field, InputType } from 'type-graphql'
 import { Task } from './Task'
 
 @ObjectType()
@@ -22,6 +22,6 @@ export class Category {
   project: Project
 
   @Field(type => [Category])
-  @OneToMany(type => Task, task => task.categories)
+  @OneToMany(type => Task, task => task.category)
   tasks: Task[]
 }

@@ -28,6 +28,6 @@ export interface FetchProject {
   tasks: Array<{
     id: string
     name: string
-    categories: Category
+    category: Category
   }>
 }

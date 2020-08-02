@@ -1,6 +1,7 @@
 import { createConnection } from "typeorm"
 import { buildSchema } from "type-graphql"
 import { ProjectsResolver } from "./project.resolvers"
+import { TaskResolver } from "./task.resolvers"
 import * as express from 'express'
 import * as graphqlHTTP from 'express-graphql'
 import * as cors from 'cors'
@@ -8,7 +9,7 @@ import * as cors from 'cors'
 (async() => {
   await createConnection()
   const schema = await buildSchema({
-    resolvers: [ProjectsResolver]
+    resolvers: [ProjectsResolver, TaskResolver]
   })
 
   const app = express()
