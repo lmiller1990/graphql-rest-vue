@@ -19,7 +19,7 @@ export class Task {
   @ManyToOne(type => Category, category => category.tasks, {
     eager: true
   })
-  categories: Category[]
+  category: Category
 
   @Field(type => Project)
   @JoinColumn({ name: 'project_id' })

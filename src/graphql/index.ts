@@ -4,11 +4,12 @@ import { ProjectsResolver } from "./project.resolvers"
 import * as express from 'express'
 import * as graphqlHTTP from 'express-graphql'
 import * as cors from 'cors'
+import { TaskResolver } from "./task.resolvers"
 
 (async() => {
   await createConnection()
   const schema = await buildSchema({
-    resolvers: [ProjectsResolver]
+    resolvers: [ProjectsResolver, TaskResolver]
   })
 
   const app = express()

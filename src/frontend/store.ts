@@ -42,7 +42,7 @@ class Store {
             tasks {
               id
               name
-              categories {
+              category {
                 id
               }
             }
@@ -62,7 +62,7 @@ class Store {
           [task.id]: {
             id: task.id,
             name: task.name,
-            categoryId: task.categories.id
+            categoryId: task.category.id
           }
         }
       }, {})
@@ -88,6 +88,28 @@ class Store {
     })
     const result: { data: { projects: SelectProject[] } } = await response.json()
     this.state.projects = result.data.projects
+  }
+
+  async updateTask(taskId: string, categoryId: string) {
+    const response = await window.fetch('http://localhost:4000/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        query: `
+        mutation {
+          updatingTask(task: {id: ${taskId}, categoryId: ${categoryId}}) {
+            category {
+              id
+            }
+          }
+        }
+        `
+      })
+    })
+    const result: { data: { updatingTask: { category: { id: string } } } } = await response.json()
+    store.getState().currentProject.tasks[taskId].categoryId = result.data.updatingTask.category.id
   }
 }
 

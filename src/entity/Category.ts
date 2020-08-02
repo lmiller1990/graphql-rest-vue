@@ -22,6 +22,6 @@ export class Category {
   project: Project
 
   @Field(type => [Category])
-  @OneToMany(type => Task, task => task.categories)
+  @OneToMany(type => Task, task => task.category)
   tasks: Task[]
 }
