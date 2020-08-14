@@ -1,5 +1,6 @@
 <template>
   <select-project :projects="projects" v-model="selectedProject" />
+  Count: {{ count }}
   <div class="categories">
     <category
       v-for="category in categories"
@@ -12,7 +13,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from 'vue'
-import { store } from './store'
+import { useStore } from './store'
 import SelectProject from './SelectProject.vue'
 import Category from './Category.vue'
 import { Category as ICategory, Task } from './types'
@@ -24,6 +25,8 @@ export default defineComponent({
   },
 
   setup() {
+    const store = useStore()
+    store.increment()
     store.fetchProjects()
     const selectedProject = ref<string>()
 
@@ -47,6 +50,7 @@ export default defineComponent({
     })
 
     return {
+      count: computed(() => store.getState().count),
       projects: computed(() => store.getState().projects),
       categories: computed(() => store.getState().currentProject?.categories),
       selectedProject,

@@ -19,7 +19,7 @@
 import { defineComponent } from "vue";
 import { Category, Task } from "./types";
 import DraggableTask from './DraggableTask.vue'
-import { store } from './store'
+import { useStore } from './store'
 
 export default defineComponent({
   components: { DraggableTask },
@@ -32,6 +32,7 @@ export default defineComponent({
     }
   },
   setup(props) {
+    const store = useStore()
     const drop = (e) => {
       e.preventDefault()
       const { id, taskid } = JSON.parse(e.dataTransfer.getData('text'))

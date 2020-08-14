@@ -1,22 +1,28 @@
-import { reactive } from 'vue'
+import { reactive, inject, provide } from 'vue'
 import { SelectProject, CurrentProject, FetchProject } from './types'
 
 interface State {
   projects: SelectProject[]
   currentProject?: CurrentProject
+  count: number
 }
 
 function initialState(): State {
   return {
-    projects: []
+    projects: [],
+    count: 0
   }
 }
 
-class Store {
+export class Store {
   protected state: State
 
   constructor(init: State = initialState()) {
     this.state = reactive(init)
+  }
+
+  increment() {
+    this.state.count += 1
   }
 
   getState(): State {
@@ -113,3 +119,7 @@ class Store {
 }
 
 export const store = new Store()
+
+export const useStore = (): Store => {
+  return inject('store')
+}

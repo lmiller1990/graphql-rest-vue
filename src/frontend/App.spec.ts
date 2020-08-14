@@ -1,5 +1,6 @@
 import { mount, flushPromises } from '@vue/test-utils'
 import App from './App.vue'
+import { Store } from './store'
 
 const mockProjectsResponse = {
   projects: [
@@ -34,7 +35,15 @@ beforeAll(() => {
 
 test('App', async () => {
   mockResponse = mockProjectsResponse
-  const wrapper = mount(App)
+  const store = new Store()
+  const wrapper = mount(App, {
+    global: {
+      provide: {
+        store: store
+      }
+    }
+  })
+
   await flushPromises()
 
   mockResponse = mockProjectResponse
