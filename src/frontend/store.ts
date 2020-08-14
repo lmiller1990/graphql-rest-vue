@@ -1,4 +1,4 @@
-import { reactive, inject, provide } from 'vue'
+import { reactive } from 'vue'
 import { SelectProject, CurrentProject, FetchProject } from './types'
 
 interface State {
@@ -67,7 +67,6 @@ class Store {
         }
       }, {})
     }
-    console.log(this.state.currentProject)
   }
 
   async fetchProjects() {
